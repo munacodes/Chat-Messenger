@@ -1,5 +1,7 @@
+import 'package:chat_messenger_app/services/auth_service.dart';
 import 'package:chat_messenger_app/widget/widget_export.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   final void Function()? onTap;
@@ -13,7 +15,26 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
 
-  void signIn() {}
+  // sign in user
+  void signIn() async {
+    // get the auth service
+    final authService = Provider.of<AuthService>(context, listen: false);
+
+    try {
+      await authService.signInWithEmailandPassword(
+        email.text,
+        password.text,
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,66 +44,68 @@ class _LoginPageState extends State<LoginPage> {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 25),
-                // logo
-                Icon(
-                  Icons.message,
-                  size: 100,
-                  color: Colors.grey[800],
-                ),
-                const SizedBox(height: 25),
-                // welcome back message
-                const Text(
-                  'Welcome back you\'ve been missed!',
-                  style: TextStyle(
-                    fontSize: 16,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 25),
+                  // logo
+                  Icon(
+                    Icons.message,
+                    size: 100,
+                    color: Colors.grey[800],
                   ),
-                ),
-                const SizedBox(height: 25),
-                // email textfield
-                MyTextField(
-                  controller: email,
-                  obscureText: false,
-                  hintText: 'Email',
-                ),
-                const SizedBox(height: 25),
+                  const SizedBox(height: 25),
+                  // welcome back message
+                  const Text(
+                    'Welcome back you\'ve been missed!',
+                    style: TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 25),
+                  // email textfield
+                  MyTextField(
+                    controller: email,
+                    obscureText: false,
+                    hintText: 'Email',
+                  ),
+                  const SizedBox(height: 25),
 
-                //password textfield
-                MyTextField(
-                  controller: password,
-                  obscureText: true,
-                  hintText: 'Password',
-                ),
+                  //password textfield
+                  MyTextField(
+                    controller: password,
+                    obscureText: true,
+                    hintText: 'Password',
+                  ),
 
-                // sign in  button
-                const SizedBox(height: 25),
-                MyButton(
-                  onTap: signIn,
-                  text: 'Sign In',
-                ),
+                  // sign in  button
+                  const SizedBox(height: 25),
+                  MyButton(
+                    onTap: signIn,
+                    text: 'Sign In',
+                  ),
 
-                // not a member? register now
-                const SizedBox(height: 35),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Not a member?'),
-                    const SizedBox(width: 5),
-                    GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Text(
-                        'Register Now',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                  // not a member? register now
+                  const SizedBox(height: 35),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text('Not a member?'),
+                      const SizedBox(width: 5),
+                      GestureDetector(
+                        onTap: widget.onTap,
+                        child: const Text(
+                          'Register Now',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
